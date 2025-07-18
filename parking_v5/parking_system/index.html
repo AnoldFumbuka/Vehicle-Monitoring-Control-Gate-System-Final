@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Monitoring Control Gate System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src='https://unpkg.com/tesseract.js@5/dist/tesseract.min.js'></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .file-input-button:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .mode-active { background-color: white; color: #4f46e5; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .status-wanted { color: #ef4444; font-weight: 700; }
+        .status-entering { color: #22c55e; }
+        .status-leaving { color: #f97316; }
+        .parking-full { color: #ef4444; font-weight: 700; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { border-top-color: #3498db; animation: spin 1s linear infinite; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Vehicle Monitoring Control Gate System</h1>
+            <p class="text-gray-600 mt-2">Scan plates to manage vehicle entry and exit.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="flex flex-col">
+                <div class="flex border border-gray-300 rounded-lg p-1 mb-4 bg-gray-100">
+                    <button id="mode-upload-btn" class="w-1/3 p-2 text-sm rounded-md mode-active">File Upload</button>
+                    <button id="mode-live-btn" class="w-1/3 p-2 text-sm rounded-md text-gray-500">Live Camera</button>
+                    <button id="mode-capture-btn" class="w-1/3 p-2 text-sm rounded-md text-gray-500">Capture</button>
+                </div>
+
+                <div id="upload-view" class="flex flex-col items-center justify-center bg-gray-100 rounded-xl p-6 border-2 border-dashed border-gray-300">
+                    <div class="w-full h-64 flex items-center justify-center mb-4">
+                        <img id="image-preview" src="https://placehold.co/600x400/e2e8f0/cbd5e0?text=Your+Image+Here" alt="Image Preview" class="max-w-full max-h-full rounded-lg object-contain">
+                    </div>
+                    <input type="file" id="image-upload" class="hidden" accept="image/*">
+                    <label for="image-upload" class="file-input-button cursor-pointer w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg text-center hover:bg-indigo-700">
+                        Choose Image
+                    </label>
+                </div>
+
+                <div id="webcam-view" class="hidden flex-col items-center justify-center bg-gray-900 rounded-xl p-6 border-2 border-dashed border-gray-700">
+                    <div class="w-full h-64 flex items-center justify-center mb-4 bg-black rounded-lg relative">
+                        <video id="webcam-feed" autoplay playsinline class="w-full max-h-full"></video>
+                        <div id="live-overlay" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold hidden">Live scan active...</div>
+                    </div>
+                    <button id="live-scan-btn" class="hidden w-full bg-red-600 text-white font-semibold py-3 px-4 rounded-lg text-center hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed">Start Live Scan</button>
+                    <button id="capture-btn" class="hidden w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg text-center hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">Capture & Analyze</button>
+                </div>
+<div class="mt-10">
+  <h2 class="text-xl font-bold mb-2">Recent Logs</h2>
+  <div id="logs-table" class="bg-white shadow rounded-lg overflow-auto max-h-80 border border-gray-200">
+    <table class="w-full text-sm text-left text-gray-600">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="px-4 py-2">Time</th>
+          <th class="px-4 py-2">Plate</th>
+          <th class="px-4 py-2">Action</th>
+        </tr>
+      </thead>
+      <tbody id="logs-body">
+        <tr><td colspan="3" class="text-center py-4 text-gray-400">Loading logs...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+            </div>
+
+            <div class="flex flex-col">
+                <button id="upload-convert-btn" class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Analyze Plate Image</button>
+
+                <div class="mt-4 flex-grow flex flex-col bg-gray-100 p-4 rounded-lg border border-gray-300">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-lg font-semibold text-gray-700">Plate Details:</label>
+                        <div class="text-right">
+                             <h3 class="text-sm font-medium text-gray-600">Cars in Parking</h3>
+                             <p id="parking-count" class="text-2xl font-bold text-indigo-600">0</p>
+                             <p id="parking-details" class="text-xs font-medium text-gray-500">Remaining Slots: 3</p>
+                        </div>
+                    </div>
+
+                    <div id="output-display" class="w-full flex-grow text-sm" style="white-space: pre-wrap;">Please wait...</div>
+                </div>
+
+                <button id="copy-btn" class="mt-4 w-full bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-800 transition">Copy Details</button>
+            </div>
+        </div>
+
+        <div id="message-box" class="mt-6 p-4 rounded-lg text-center text-white font-medium hidden"></div>
+    </div>
+
+<script>
+setInterval(loadLogs, 5000); // Refresh logs every 10 seconds
+
+async function loadLogs() {
+  try {
+    const res = await fetch('/logs');
+    const data = await res.json();
+
+    const tbody = document.getElementById('logs-body');
+    tbody.innerHTML = ''; // clear loading
+
+    if (data.length === 0) {
+      tbody.innerHTML = <tr><td colspan="3" class="text-center py-4 text-gray-400">No logs found.</td></tr>;
+      return;
+    }
+
+    data.forEach(log => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="px-4 py-2">${log.timestamp}</td>
+        <td class="px-4 py-2 font-semibold">${log.plate}</td>
+        <td class="px-4 py-2 ${log.action === 'entering' ? 'text-green-600' : 'text-red-600'} font-bold">
+          ${log.action.toUpperCase()}
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+
+  } catch (err) {
+    console.error('Failed to load logs:', err);
+    const tbody = document.getElementById('logs-body');
+    tbody.innerHTML = <tr><td colspan="3" class="text-center py-4 text-red-600">Error loading logs.</td></tr>;
+  }
+}
+
+// Call it once on load
+loadLogs();
+
+const vehicleDatabase = {
+    "T457EAG": { owner: "DR. JACQUELINE DAMAS", make: "Honda", model: "CR-V", color: "Black", status: "Registered" },
+    "T375DEJ": { owner: "ANOLD FUMBUKA", make: "Toyota", model: "LandCruiser", color: "Silver", status: "Registered" },
+    "T855DTT": { owner: "OWEN KINYAHA", make: "Toyota", model: "RAV4", color: "Black", status: "Registered" },
+    "T444DST": { owner: "DR. LILIAN MKONYI", make: "Toyota", model: "Alphard", color: "Silver", status: "Registered" },
+    "T982EBS": { owner: "DR. YONA ANDENGELILE", make: "Toyota", model: "Voxy", color: "White", status: "Registered" },
+    "T386BBR": { owner: "DR. ALLY BITEBO", make: "Nissan", model: "Murano", color: "Bronze", status: "Registered" },
+    "T696AWC": { owner: "DR. JOSEPH MUSHI", make: "Toyota", model: "Cami", color: "White", status: "Registered" },
+    "SU57383": { owner: "COICT PRINCIPAL", make: "Toyota", model: "Landcruiser", color: "White", status: "Registered" },
+    "STK8723": { owner: "DEPUTY PRINCIPAL", make: "Toyota", model: "Hilux", color: "Blue", status: "Registered" },
+    "T922DRT": { owner: "KWANDU KULIMBA", make: "Toyota", model: "Raum", color: "Navy", status: "Registered" },
+    "T637CTE": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "T644BVJ": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "SU26380": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "SU26374": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "STJ6321": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "STK8743": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "STK1298": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "DFPA3289": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "DFPA9241": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+    "STK1298": { owner: "Unregistered", make: "UNKNOWN", model: "UNKNOWN", color: "UNKNOWN", status: "Unregistered" },
+};
+
+const MAX_PARKING_CAPACITY = 40;
+let carsInParking = new Set();
+
+const outputDisplay = document.getElementById('output-display');
+const copyBtn = document.getElementById('copy-btn');
+const messageBox = document.getElementById('message-box');
+const imageUpload = document.getElementById('image-upload');
+const imagePreview = document.getElementById('image-preview');
+const uploadConvertBtn = document.getElementById('upload-convert-btn');
+const modeUploadBtn = document.getElementById('mode-upload-btn');
+const modeLiveBtn = document.getElementById('mode-live-btn');
+const modeCaptureBtn = document.getElementById('mode-capture-btn');
+const uploadView = document.getElementById('upload-view');
+const webcamView = document.getElementById('webcam-view');
+const webcamFeed = document.getElementById('webcam-feed');
+const liveScanBtn = document.getElementById('live-scan-btn');
+const captureBtn = document.getElementById('capture-btn');
+const liveOverlay = document.getElementById('live-overlay');
+const parkingCountDisplay = document.getElementById('parking-count');
+const parkingDetailsDisplay = document.getElementById('parking-details');
+
+let selectedImageFile = null;
+let webcamStream = null;
+let liveScanInterval = null;
+let isOcrRunning = false;
+let tesseractWorker = null;
+let lastPlateData = null;
+
+function getPlateParts(plateStr) { return plateStr.match(/[A-Z]+|[0-9]+/g) || []; }
+
+function calculateSimilarity(s1, s2) {
+    let longer = s1, shorter = s2;
+    if (s1.length < s2.length) { longer = s2; shorter = s1; }
+    let longerLength = longer.length;
+    if (longerLength === 0) return 1.0;
+    const costs = Array(longer.length + 1).fill(0).map((_, i) => i);
+    for (let j = 1; j <= shorter.length; j++) {
+        let prev = costs[0];
+        costs[0] = j;
+        for (let i = 1; i <= longer.length; i++) {
+            const temp = costs[i];
+            costs[i] = longer[i - 1] === shorter[j - 1] ? prev : 1 + Math.min(prev, costs[i], costs[i - 1]);
+            prev = temp;
+        }
+    }
+    return 1 - (costs[longer.length] / longerLength);
+}
+
+function findPlateInDB(ocrText) {
+    const normalizedOcr = (ocrText || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (normalizedOcr.length < 3) return null;
+    let bestMatch = null;
+    let highestScore = 0;
+    const SCORE_THRESHOLD = 0.8;
+    const ocrParts = getPlateParts(normalizedOcr);
+    if (ocrParts.length === 0) return null;
+    for (const dbPlate in vehicleDatabase) {
+        const dbPlateParts = getPlateParts(dbPlate);
+        let currentScore = ocrParts.reduce((acc, ocrPart) => {
+            const partScore = dbPlateParts.reduce((max, dbPart) => {
+                const sim = calculateSimilarity(ocrPart, dbPart);
+                return sim > 0.75 ? Math.max(max, sim * dbPart.length) : max;
+            }, 0);
+            return acc + partScore;
+        }, 0);
+        if (currentScore > highestScore) {
+            highestScore = currentScore;
+            bestMatch = { plate: dbPlate, ...vehicleDatabase[dbPlate] };
+        }
+    }
+    return highestScore >= SCORE_THRESHOLD ? bestMatch : null;
+}
+
+function formatPlateDetails(plateData, parkingStatus) {
+    if (!plateData) return null;
+    let detailsHtml = Plate Number: <strong>${plateData.plate}</strong>\n\nOwner:  <strong>${plateData.owner}</strong>\nMake:   <strong>${plateData.make}</strong>\nModel:  <strong>${plateData.model}</strong>\nColor:  <strong>${plateData.color}</strong>\n;
+    if (parkingStatus === 'Entering') detailsHtml += Status: <strong class="status-entering">ENTERING</strong>;
+    else if (parkingStatus === 'Leaving') detailsHtml += Status: <strong class="status-leaving">LEAVING</strong>;
+    else if (parkingStatus === 'Cannot Enter') detailsHtml += Status: <strong class="parking-full">PARKING FULL</strong>;
+    return detailsHtml;
+}
+
+function updateParkingCount() {
+    const count = carsInParking.size;
+    parkingCountDisplay.textContent = count;
+    const remaining = MAX_PARKING_CAPACITY - count;
+    if (count >= MAX_PARKING_CAPACITY) {
+        parkingDetailsDisplay.textContent = 'Parking Full';
+        parkingDetailsDisplay.className = 'text-xs font-medium parking-full';
+    } else {
+        parkingDetailsDisplay.textContent = Remaining Slots: ${remaining};
+        parkingDetailsDisplay.className = 'text-xs font-medium text-gray-500';
+    }
+}
+
+function sendSerialData(plate, isEntering) {
+    fetch('/serial_event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            plate: plate,
+            action: isEntering ? 1 : 0,
+            slots: MAX_PARKING_CAPACITY,
+            used: carsInParking.size
+        })
+    }).catch(err => console.error('Serial send error:', err));
+}
+
+function processOcrResult(text) {
+    const plateData = findPlateInDB(text);
+    if (plateData) {
+        let parkingStatus;
+        if (carsInParking.has(plateData.plate)) {
+            parkingStatus = 'Leaving';
+            carsInParking.delete(plateData.plate);
+        } else {
+            if (carsInParking.size >= MAX_PARKING_CAPACITY) {
+                showMessage('Parking is full. Cannot enter.', 'error');
+                outputDisplay.innerHTML = formatPlateDetails(plateData, "Cannot Enter");
+                return;
+            }
+            parkingStatus = 'Entering';
+            carsInParking.add(plateData.plate);
+        }
+        updateParkingCount();
+        sendSerialData(plateData.plate, parkingStatus === 'Entering');
+        lastPlateData = plateData;
+        outputDisplay.innerHTML = formatPlateDetails(plateData, parkingStatus);
+    }
+}
+
+function resetUIState() {
+    outputDisplay.innerHTML = 'Please wait...';
+    lastPlateData = null;
+    messageBox.classList.add('hidden');
+}
+
+function resetParkingState() {
+    carsInParking.clear();
+    updateParkingCount();
+    resetUIState();
+}
+
+async function analyzeImage(imageSource, buttonElement) {
+    if (!imageSource) { showMessage('No image source.', 'error'); return; }
+    buttonElement.disabled = true;
+    resetUIState();
+    outputDisplay.innerHTML = "Analyzing...";
+    try {
+        const worker = await Tesseract.createWorker('eng');
+        const { data: { text } } = await worker.recognize(imageSource);
+        processOcrResult(text);
+        if (!lastPlateData) outputDisplay.innerHTML = "Could not find a match in the database.";
+        showMessage('Analysis complete!', 'success');
+        await worker.terminate();
+    } catch (error) {
+        console.error('OCR Error:', error);
+        showMessage('An error occurred during analysis.', 'error');
+        outputDisplay.innerHTML = "Error during analysis.";
+    } finally {
+        buttonElement.disabled = false;
+    }
+}
+
+async function initializeWorker() {
+    if (!tesseractWorker) tesseractWorker = await Tesseract.createWorker('eng');
+}
+
+async function performLiveScan() {
+    if (isOcrRunning || !webcamStream) return;
+    isOcrRunning = true;
+    const canvas = document.createElement('canvas');
+    canvas.width = webcamFeed.videoWidth;
+    canvas.height = webcamFeed.videoHeight;
+    canvas.getContext('2d').drawImage(webcamFeed, 0, 0, canvas.width, canvas.height);
+    try {
+        await initializeWorker();
+        const { data: { text } } = await tesseractWorker.recognize(canvas);
+        processOcrResult(text);
+    } catch (e) { console.error("Live OCR error:", e); }
+    finally { isOcrRunning = false; }
+}
+
+async function startLiveScan() {
+    liveScanBtn.disabled = true;
+    liveScanBtn.textContent = 'Starting Engine...';
+    resetUIState();
+    await initializeWorker();
+    liveScanInterval = setInterval(performLiveScan, 2500);
+    liveScanBtn.textContent = 'Stop Live Scan';
+    liveScanBtn.classList.replace('bg-red-600', 'bg-yellow-500');
+    liveScanBtn.classList.replace('hover:bg-red-700', 'hover:bg-yellow-600');
+    liveOverlay.classList.remove('hidden');
+    liveScanBtn.disabled = false;
+}
+
+async function stopLiveScan() {
+    if (liveScanInterval) clearInterval(liveScanInterval);
+    liveScanInterval = null;
+    if (tesseractWorker) { await tesseractWorker.terminate(); tesseractWorker = null; }
+    liveScanBtn.textContent = 'Start Live Scan';
+    liveScanBtn.classList.replace('bg-yellow-500', 'bg-red-600');
+    liveScanBtn.classList.replace('hover:bg-yellow-600', 'hover:bg-red-700');
+    liveOverlay.classList.add('hidden');
+    isOcrRunning = false;
+}
+
+function showMessage(message, type = 'info') {
+    messageBox.textContent = message;
+    messageBox.className = 'mt-6 p-4 rounded-lg text-center text-white font-medium';
+    const colors = { error: 'bg-red-500', success: 'bg-green-500', info: 'bg-blue-500' };
+    messageBox.classList.add(colors[type] || 'bg-blue-500');
+    messageBox.classList.remove('hidden');
+}
+
+async function startWebcam() {
+    try {
+        if (webcamStream) return;
+        webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        webcamFeed.srcObject = webcamStream;
+    } catch (error) {
+        showMessage("Could not access webcam. Please grant permissions.", "error");
+        switchToUploadMode();
+    }
+}
+
+async function stopWebcam() {
+    await stopLiveScan();
+    if (webcamStream) {
+        webcamStream.getTracks().forEach(track => track.stop());
+        webcamStream = null;
+    }
+}
+
+async function switchToUploadMode() {
+    await stopWebcam();
+    uploadView.classList.remove('hidden');
+    webcamView.classList.add('hidden');
+    modeUploadBtn.classList.add('mode-active');
+    modeLiveBtn.classList.remove('mode-active');
+    modeCaptureBtn.classList.remove('mode-active');
+    uploadConvertBtn.classList.remove('hidden');
+    resetParkingState();
+}
+
+async function switchToLiveMode() {
+    uploadView.classList.add('hidden');
+    webcamView.classList.remove('hidden');
+    captureBtn.classList.add('hidden');
+    liveScanBtn.classList.remove('hidden');
+    modeLiveBtn.classList.add('mode-active');
+    modeUploadBtn.classList.remove('mode-active');
+    modeCaptureBtn.classList.remove('mode-active');
+    uploadConvertBtn.classList.add('hidden');
+    resetParkingState();
+    await startWebcam();
+}
+
+async function switchToCaptureMode() {
+    await stopLiveScan();
+    uploadView.classList.add('hidden');
+    webcamView.classList.remove('hidden');
+    liveScanBtn.classList.add('hidden');
+    captureBtn.classList.remove('hidden');
+    modeCaptureBtn.classList.add('mode-active');
+    modeUploadBtn.classList.remove('mode-active');
+    modeLiveBtn.classList.remove('mode-active');
+    uploadConvertBtn.classList.add('hidden');
+    resetParkingState();
+    await startWebcam();
+}
+
+modeUploadBtn.addEventListener('click', switchToUploadMode);
+modeLiveBtn.addEventListener('click', switchToLiveMode);
+modeCaptureBtn.addEventListener('click', switchToCaptureMode);
+
+imageUpload.addEventListener('change', e => {
+    selectedImageFile = e.target.files[0];
+    if (!selectedImageFile) return;
+    const reader = new FileReader();
+    reader.onload = e => { imagePreview.src = e.target.result; };
+    reader.readAsDataURL(selectedImageFile);
+    uploadConvertBtn.disabled = false;
+    resetUIState();
+    outputDisplay.innerHTML = 'Image loaded. Ready to analyze.';
+});
+
+uploadConvertBtn.addEventListener('click', () => analyzeImage(selectedImageFile, uploadConvertBtn));
+
+captureBtn.addEventListener('click', () => {
+    if (!webcamStream) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = webcamFeed.videoWidth;
+    canvas.height = webcamFeed.videoHeight;
+    canvas.getContext('2d').drawImage(webcamFeed, 0, 0, canvas.width, canvas.height);
+    analyzeImage(canvas, captureBtn);
+});
+
+liveScanBtn.addEventListener('click', () => {
+    if (liveScanInterval) stopLiveScan(); else startLiveScan();
+});
+
+copyBtn.addEventListener('click', () => {
+    const textToCopy = outputDisplay.innerText;
+    if (!textToCopy || textToCopy.startsWith('Please wait...')) {
+        showMessage('Nothing to copy!', 'error'); return;
+    }
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = textToCopy;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    try {
+        document.execCommand('copy');
+        showMessage('Details copied to clipboard!', 'success');
+    } catch (err) { showMessage('Could not copy details.', 'error'); }
+    document.body.removeChild(tempTextArea);
+});
+setInterval(loadLogs, 5000); // Refresh logs every 5 seconds
+
+async function loadLogs() {
+  try {
+    const res = await fetch('/logs');
+    const data = await res.json();
+
+    const tbody = document.getElementById('logs-body');
+    tbody.innerHTML = ''; // clear previous
+
+    if (data.length === 0) {
+      tbody.innerHTML = <tr><td colspan="3" class="text-center py-4 text-gray-400">No logs found.</td></tr>;
+      return;
+    }
+
+    data.forEach(log => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="px-4 py-2">${log.timestamp}</td>
+        <td class="px-4 py-2 font-semibold">${log.plate}</td>
+        <td class="px-4 py-2 ${log.action === 'entering' ? 'text-green-600' : 'text-red-600'} font-bold">
+          ${log.action.toUpperCase()}
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+
+  } catch (err) {
+    console.error('Failed to load logs:', err);
+    const tbody = document.getElementById('logs-body');
+    tbody.innerHTML = <tr><td colspan="3" class="text-center py-4 text-red-600">Error loading logs.</td></tr>;
+  }
+}
+setInterval(loadLogs, 5000);
+loadLogs();
+switchToUploadMode();
+</script>
+
+</body>
+</html>

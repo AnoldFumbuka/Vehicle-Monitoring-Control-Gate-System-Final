@@ -1,0 +1,462 @@
+[
+    {
+        "timestamp": "2025-06-24T18:56:20",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:15:28",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:23:27",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:31:31",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:31:46",
+        "plate": "T123IBU",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:40:25",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:44:25",
+        "plate": "T123IBU",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:56:05",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:56:19",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-24T19:56:46",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:57:22",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-24T19:57:54",
+        "plate": "T457EVZ",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-24T20:04:11",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-24T20:17:03",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T11:09:54",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T11:38:58",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T11:40:33",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T11:41:46",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T11:57:10",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T11:57:47",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T12:08:50",
+        "plate": "T444DST",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T12:08:55",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T12:09:55",
+        "plate": "T444DST",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T12:09:57",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T12:17:53",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T13:00:05",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:20:30",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:20:40",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:20:47",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:20:58",
+        "plate": "T123IBU",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:21:05",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:27:08",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:34:01",
+        "plate": "T386BBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:34:18",
+        "plate": "T982EBS",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:34:21",
+        "plate": "T982EBS",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:34:36",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:34:43",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:35:11",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:35:36",
+        "plate": "T123IBU",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:36:14",
+        "plate": "T982EBS",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:36:21",
+        "plate": "T386BBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:36:41",
+        "plate": "T386BBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:38:54",
+        "plate": "T696AWC",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:39:02",
+        "plate": "T375DEJ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:39:09",
+        "plate": "T386BBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:39:16",
+        "plate": "T982EBS",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:39:24",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:39:29",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:39:36",
+        "plate": "T123IBU",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:39:42",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T14:50:51",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:50:59",
+        "plate": "T123IBU",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:51:04",
+        "plate": "T444DST",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:51:11",
+        "plate": "T457EVZ",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:51:19",
+        "plate": "T982EBS",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:51:24",
+        "plate": "T386BBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:51:31",
+        "plate": "T696AWC",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T14:51:44",
+        "plate": "T375DEJ",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T15:00:51",
+        "plate": "T375DEJ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T15:01:19",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T15:01:22",
+        "plate": "T444DST",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T15:01:46",
+        "plate": "T375DEJ",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T15:03:44",
+        "plate": "T386BBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T15:04:14",
+        "plate": "T982EBS",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T15:05:06",
+        "plate": "T386BBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T15:05:14",
+        "plate": "T982EBS",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:16:46",
+        "plate": "T457EVZ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:17:00",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:17:31",
+        "plate": "T386BBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:18:11",
+        "plate": "T123IBU",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:18:18",
+        "plate": "T982EBS",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:18:51",
+        "plate": "T696AWC",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:18:58",
+        "plate": "T898SBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:19:06",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:19:21",
+        "plate": "T696AWC",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:19:32",
+        "plate": "T375DEJ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:19:34",
+        "plate": "T375DEJ",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:19:41",
+        "plate": "T386BBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:19:54",
+        "plate": "T982EBS",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:20:25",
+        "plate": "T375DEJ",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:20:48",
+        "plate": "T444DST",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:20:51",
+        "plate": "T444DST",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:03",
+        "plate": "T898SBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:12",
+        "plate": "T457EVZ",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:20",
+        "plate": "T444DST",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:28",
+        "plate": "T375DEJ",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:35",
+        "plate": "T982EBS",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:41",
+        "plate": "T386BBR",
+        "action": "entering"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:48",
+        "plate": "T386BBR",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:21:58",
+        "plate": "T982EBS",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:22:14",
+        "plate": "T123IBU",
+        "action": "leaving"
+    },
+    {
+        "timestamp": "2025-06-25T20:22:28",
+        "plate": "T898SBR",
+        "action": "leaving"
+    }
+]
